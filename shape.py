@@ -42,5 +42,10 @@ class Shape:
         self.imgSz = imgSz
         self.color = Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.params = ["diameter", "color", "pos"]
+        self. fitness = -1
 
-    def
+    def mutate(self):
+
+
+
+
