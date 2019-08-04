@@ -2,7 +2,7 @@ import numpy as np
 import random
 from PIL import Image
 from PIL import ImageDraw
-from copy import deepcopy
+
 
 
 class Point:
@@ -67,6 +67,9 @@ class Shape:
 
         return child
 
+    #def score(self, ref):
+        # fitness(mean absolute error) = |circle_algo(RGB) - circle_ref(RGB)|
+
     def save_shape(self):
         """ saving shape """
         shape = {}
@@ -86,6 +89,8 @@ class Shape:
         self.fitness = ref_shape.fitness
 
 
+
+# functions for debugging the classes
 def drawImage(shapes):
     image = Image.new('RGB', (250, 250), (255, 255, 255))
     example2paint = ImageDraw.Draw(image)
@@ -115,3 +120,32 @@ def test_function():
     shapes = (A, B, C)
     img = drawImage(shapes=shapes)
     img.show(title='After CrossOver')
+
+if __name__ == "__main__":
+    A = Shape((25, 25))
+    B = Shape((250, 250))
+
+    diameter = 5
+    a = 12
+    b = 12
+    A.diameter = diameter
+    B.diameter = diameter
+    A.pos.x = a
+    A.pos.y = b
+    B.pos.x = a
+    B.pos.y = b
+
+    image = Image.new('RGB', (250, 250), (255, 255, 255))
+    circleA = ImageDraw.Draw(image)
+
+    h = (0, 255, 0)
+    circleA.ellipse([A.pos.x - A.diameter, A.pos.y - A.diameter,
+                     A.pos.x + A.diameter, A.pos.y + A.diameter], outline=h, fill=h)
+
+    h = (255, 0, 0)
+    circleA.ellipse([A.pos.x - A.diameter, A.pos.y - A.diameter,
+                     A.pos.x + A.diameter, A.pos.y + A.diameter], outline=h, fill=h)
+
+    image.show(title='After sub')
+
+    tmp = 1
