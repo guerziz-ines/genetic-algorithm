@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib as plt
 import random
 from PIL import Image
 from PIL import ImageDraw
@@ -37,7 +36,7 @@ class Color:
 # Implementation of circle only.
 class Shape:
     def __init__(self, imgSz):
-        self.pos = Point(random.randint(0, imgSz[0], random.randint(0, imgSz[1])))
+        self.pos = Point(random.randint(0, imgSz[0]), random.randint(0, imgSz[1]))
         self.diameter = random.randint(5, 15)
         self.imgSz = imgSz
         self.color = Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -45,7 +44,74 @@ class Shape:
         self. fitness = -1
 
     def mutate(self):
+        mutant_param = random.choice(self.params)
+
+        if mutant_param == 'diameter':
+            self.diameter = random.randint(5, 15)
+        elif mutant_param == 'color':
+            self.color = Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        else:
+            self.pos = Point(random.randint(0, self.imgSz[0]), random.randint(0, self.imgSz[1]))
+
+    def crossover(self, parentB):
+
+        """"CrossOver formula: assuming we have 2 shapes taken posA, diameterB and mean(RGB)"""
+
+        child = Shape(self.imgSz)
+
+        child.pos = self.pos
+        child.diameter = parentB.diameter
+        child.color = Color(np.mean((self.color.r, parentB.color.r), dtype=int),
+                                np.mean((self.color.g, parentB.color.g), dtype=int),
+                                np.mean((self.color.b, parentB.color.b), dtype=int))
+
+        return child
+
+    def save_shape(self):
+        """ saving shape """
+        shape = {}
+        shape["imgSz"] = self.imgSz
+        shape["diameter"] = self.diameter
+        shape["color"] = (self.color.r, self.color.g, self.color.b)
+        shape["pos"] = (self.pos.x, self.pos.y)
+        shape["fitness"] = self.fitness
+
+        return shape
+
+    def load_shape(self, ref_shape):
+        self.imgSz = ref_shape["imgSz"]
+        self.diameter = ref_shape.diameter
+        self.pos = Point(ref_shape.pos.x, ref_shape.pos.y)
+        self.color = Color(ref_shape.color.r, ref_shape.color.g, ref_shape.color.b)
+        self.fitness = ref_shape.fitness
 
 
+def drawImage(shapes):
+    image = Image.new('RGB', (250, 250), (255, 255, 255))
+    example2paint = ImageDraw.Draw(image)
 
+    for shapeIdx in shapes:
+        h = (shapeIdx.color.r, shapeIdx.color.g, shapeIdx.color.b)
+        example2paint.ellipse([shapeIdx.pos.x - shapeIdx.diameter, shapeIdx.pos.y - shapeIdx.diameter,
+                               shapeIdx.pos.x + shapeIdx.diameter, shapeIdx.pos.y + shapeIdx.diameter], outline=h, fill=h)
 
+    return image
+
+def test_function():
+
+    A = Shape((250, 250))
+    B = Shape((250, 250))
+    shapes = (A, B)
+    img = drawImage(shapes)
+    img.show(title= 'Orginal')
+    A.mutate()
+    B.mutate()
+
+    shapes = (A, B)
+    img = drawImage(shapes)
+    img.show(title='After mutation')
+
+    C = A.crossover(B)
+    shapes = (A, B, C)
+    img = drawImage(shapes=shapes)
+    img.show(title='After CrossOver')
