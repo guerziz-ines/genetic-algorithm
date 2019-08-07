@@ -2,6 +2,7 @@ import numpy as np
 import random
 from PIL import Image
 from PIL import ImageDraw
+from PIL import ImageMath
 
 
 
@@ -88,6 +89,7 @@ class Shape:
         self.color = Color(ref_shape.color.r, ref_shape.color.g, ref_shape.color.b)
         self.fitness = ref_shape.fitness
 
+    def score(self, im_ref, im_curr):
 
 
 # functions for debugging the classes
@@ -102,6 +104,7 @@ def drawImage(shapes):
 
     return image
 
+
 def test_function():
 
     A = Shape((250, 250))
@@ -113,39 +116,19 @@ def test_function():
     B.mutate()
 
     shapes = (A, B)
-    img = drawImage(shapes)
-    img.show(title='After mutation')
+    img1 = drawImage(shapes)
+    img1.show(title='After mutation')
 
     C = A.crossover(B)
     shapes = (A, B, C)
-    img = drawImage(shapes=shapes)
-    img.show(title='After CrossOver')
+    img2 = drawImage(shapes=shapes)
+    img2.show(title='After CrossOver')
+
+    i1 = np.array(img1, np.int16)
+    i2 = np.array(img2, np.int16)
 
 if __name__ == "__main__":
     A = Shape((25, 25))
     B = Shape((250, 250))
-
-    diameter = 5
-    a = 12
-    b = 12
-    A.diameter = diameter
-    B.diameter = diameter
-    A.pos.x = a
-    A.pos.y = b
-    B.pos.x = a
-    B.pos.y = b
-
-    image = Image.new('RGB', (250, 250), (255, 255, 255))
-    circleA = ImageDraw.Draw(image)
-
-    h = (0, 255, 0)
-    circleA.ellipse([A.pos.x - A.diameter, A.pos.y - A.diameter,
-                     A.pos.x + A.diameter, A.pos.y + A.diameter], outline=h, fill=h)
-
-    h = (255, 0, 0)
-    circleA.ellipse([A.pos.x - A.diameter, A.pos.y - A.diameter,
-                     A.pos.x + A.diameter, A.pos.y + A.diameter], outline=h, fill=h)
-
-    image.show(title='After sub')
 
     tmp = 1
