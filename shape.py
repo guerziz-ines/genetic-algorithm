@@ -3,6 +3,7 @@ import random
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageMath
+import matplotlib as plt
 
 
 
@@ -89,7 +90,17 @@ class Shape:
         self.color = Color(ref_shape.color.r, ref_shape.color.g, ref_shape.color.b)
         self.fitness = ref_shape.fitness
 
-    def score(self, im_ref, im_curr):
+    def score(self, im_diff):
+        a, b = self.pos.x, self.pos.y
+        r = np.round(self.diameter / 2).astype('int')
+        n = self.diameter + 1
+        data = im_diff[a-r:a+r, b-r:b+r, :]
+
+        Y, X = np.ogrid[-a:n-a, -b:n-b]
+        circle = X*X + Y*Y <= r*r
+
+
+        self.fitness=fitness
 
 
 # functions for debugging the classes
@@ -117,18 +128,27 @@ def test_function():
 
     shapes = (A, B)
     img1 = drawImage(shapes)
-    img1.show(title='After mutation')
+    #img1.show(title='After mutation')
 
     C = A.crossover(B)
     shapes = (A, B, C)
     img2 = drawImage(shapes=shapes)
-    img2.show(title='After CrossOver')
+    #img2.show(title='After CrossOver')
 
     i1 = np.array(img1, np.int16)
     i2 = np.array(img2, np.int16)
+
+
+    result = np.abs(i1 - i2).astype('uint8')
+
+    score = A.score(result)
+    im3 = Image.fromarray(result)
+
+    im3.show()
 
 if __name__ == "__main__":
     A = Shape((25, 25))
     B = Shape((250, 250))
 
+    test_function()
     tmp = 1
