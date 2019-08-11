@@ -3,8 +3,6 @@ import random
 from PIL import Image
 from PIL import ImageDraw
 from scipy.ndimage.filters import generic_filter as gf
-from PIL import ImageMath
-import matplotlib as plt
 
 
 class Point:
@@ -60,15 +58,14 @@ class Shape:
 
         """"CrossOver formula: assuming we have 2 shapes taken posA, diameterB and mean(RGB)"""
 
-        child = Shape(self.imgSz)
+        self.pos.x = np.mean((self.pos.x, parentB[0].pos.x))
+        self.pos.y = np.mean((self.pos.y, parentB[0].pos.y))
+        self.diameter = np.mean((self.diameter, parentB[0].diameter))
+        self.color = Color(np.mean((self.color.r, parentB[0].color.r), dtype=int),
+                                np.mean((self.color.g, parentB[0].color.g), dtype=int),
+                                np.mean((self.color.b, parentB[0].color.b), dtype=int))
 
-        child.pos = self.pos
-        child.diameter = parentB.diameter
-        child.color = Color(np.mean((self.color.r, parentB.color.r), dtype=int),
-                                np.mean((self.color.g, parentB.color.g), dtype=int),
-                                np.mean((self.color.b, parentB.color.b), dtype=int))
 
-        return child
 
     def save_shape(self):
         """ saving shape """
@@ -137,8 +134,6 @@ def test_function():
     i2 = np.array(img2, np.int16)
 
     result = np.abs(i1 - i2).astype('uint8')
-
-    print A.score(result)
 
     im3 = Image.fromarray(result)
 
