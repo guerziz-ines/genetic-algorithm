@@ -2,7 +2,7 @@ import numpy as np
 import random
 from PIL import Image
 from PIL import ImageDraw
-from scipy.ndimage.filters import generic_filters as gf
+from scipy.ndimage.filters import generic_filter as gf
 from PIL import ImageMath
 import matplotlib as plt
 
@@ -97,13 +97,13 @@ class Shape:
         n = self.diameter + 1
         data = im_diff[a-r:a+r, b-r:b+r, :]
 
-        kernel = np.zeros(n, n)
+        kernel = np.zeros((n, n))
         y, x = np.ogrid[-r:r+1, -r:r+1]
         mask_circle = x**2 + y**2 <= r**2
         kernel[mask_circle] = 1
         fitness = gf(data, np.mean, footprint=kernel)
 
-        self.fitness= fitness
+        self.fitness = fitness
 
 
 # functions for debugging the classes
