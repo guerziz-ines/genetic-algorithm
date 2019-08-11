@@ -70,9 +70,6 @@ class Shape:
 
         return child
 
-    #def score(self, ref):
-        # fitness(mean absolute error) = |circle_algo(RGB) - circle_ref(RGB)|
-
     def save_shape(self):
         """ saving shape """
         shape = {}
@@ -94,17 +91,17 @@ class Shape:
     def score(self, im_diff):
         a, b = self.pos.x, self.pos.y
         r = np.round(self.diameter / 2).astype('int')
-        n = self.diameter + 1
-        data = im_diff[a-r:a+r, b-r:b+r, :]
+        n = 2*r + 1
+        data = im_diff[b-r:b+r+1, a-r:a+r+1, :]
 
-        kernel = np.zeros((n, n))
+        kernel = np.zeros((n, n, 3))
         y, x = np.ogrid[-r:r+1, -r:r+1]
         mask_circle = x**2 + y**2 <= r**2
         kernel[mask_circle] = 1
-        fitness = gf(data, np.mean, footprint=kernel)
+        fitness = np.mean(np.mean(np.mean(gf(data, np.mean, footprint=kernel))))
 
         self.fitness = fitness
-        a=1
+
 
 # functions for debugging the classes
 def drawImage(shapes):
@@ -129,29 +126,21 @@ def test_function():
     A.mutate()
     B.mutate()
 
-    shapes = (A, B)
     img1 = drawImage(shapes)
-    #img1.show(title='After mutation')
 
     C = A.crossover(B)
     shapes = (A, B, C)
     img2 = drawImage(shapes=shapes)
-    #img2.show(title='After CrossOver')
+    img2.show(title='After CrossOver')
 
     i1 = np.array(img1, np.int16)
     i2 = np.array(img2, np.int16)
 
-
     result = np.abs(i1 - i2).astype('uint8')
 
-    score = A.score(result)
+    print A.score(result)
+
     im3 = Image.fromarray(result)
 
     im3.show()
 
-if __name__ == "__main__":
-    A = Shape((25, 25))
-    B = Shape((250, 250))
-
-    test_function()
-    tmp = 1
