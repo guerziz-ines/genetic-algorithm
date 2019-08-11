@@ -104,7 +104,7 @@ class Shape:
         fitness = gf(data, np.mean, footprint=kernel)
 
         self.fitness = fitness
-
+        a=1
 
 # functions for debugging the classes
 def drawImage(shapes):
