@@ -146,4 +146,4 @@ def test_function():
 
     im3 = Image.fromarray(result)
 
-    im3.show()
+    im.show()
