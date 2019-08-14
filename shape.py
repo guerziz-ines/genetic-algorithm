@@ -36,13 +36,14 @@ class Color:
 
 # Implementation of circle only.
 class Shape:
-    def __init__(self, imgSz):
+    def __init__(self, imgSz, pop):
         self.pos = Point(random.randint(0, imgSz[0]), random.randint(0, imgSz[1]))
         self.diameter = random.randint(5, 15)
         self.imgSz = imgSz
         self.color = Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.params = ["diameter", "color", "pos"]
         self. fitness = -1
+        self. population = pop
 
     def mutate(self):
         mutant_param = random.choice(self.params)
@@ -58,12 +59,12 @@ class Shape:
 
         """"CrossOver formula: assuming we have 2 shapes taken posA, diameterB and mean(RGB)"""
 
-        self.pos.x = np.mean((self.pos.x, parentB[0].pos.x))
-        self.pos.y = np.mean((self.pos.y, parentB[0].pos.y))
-        self.diameter = np.mean((self.diameter, parentB[0].diameter))
-        self.color = Color(np.mean((self.color.r, parentB[0].color.r), dtype=int),
-                                np.mean((self.color.g, parentB[0].color.g), dtype=int),
-                                np.mean((self.color.b, parentB[0].color.b), dtype=int))
+        self.pos.x = np.mean((self.pos.x, parentB.pos.x)).astype('int16')
+        self.pos.y = np.mean((self.pos.y, parentB.pos.y)).astype('int16')
+        self.diameter = np.mean((self.diameter, parentB.diameter)).astype('int16')
+        self.color = Color(np.mean((self.color.r, parentB.color.r), dtype=int),
+                                np.mean((self.color.g, parentB.color.g), dtype=int),
+                                np.mean((self.color.b, parentB.color.b), dtype=int))
 
 
 
@@ -95,10 +96,10 @@ class Shape:
         y, x = np.ogrid[-r:r+1, -r:r+1]
         mask_circle = x**2 + y**2 <= r**2
         kernel[mask_circle] = 1
+        #need to chek this line
         fitness = np.mean(np.mean(np.mean(gf(data, np.mean, footprint=kernel))))
 
         self.fitness = fitness
-
 
 # functions for debugging the classes
 def drawImage(shapes):
@@ -107,8 +108,8 @@ def drawImage(shapes):
 
     for shapeIdx in shapes:
         h = (shapeIdx.color.r, shapeIdx.color.g, shapeIdx.color.b)
-        example2paint.ellipse([shapeIdx.pos.x - shapeIdx.diameter, shapeIdx.pos.y - shapeIdx.diameter,
-                               shapeIdx.pos.x + shapeIdx.diameter, shapeIdx.pos.y + shapeIdx.diameter], outline=h, fill=h)
+        example2paint.ellipse([shapeIdx.pos.y - shapeIdx.diameter, shapeIdx.pos.x - shapeIdx.diameter,
+                               shapeIdx.pos.y + shapeIdx.diameter, shapeIdx.pos.x + shapeIdx.diameter], outline=h, fill=h)
 
     return image
 

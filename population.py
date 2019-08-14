@@ -2,6 +2,7 @@ import sys
 import os
 import numpy as np
 import matplotlib as plt
+from copy import deepcopy
 import random
 from PIL import Image
 from PIL import ImageDraw
@@ -15,7 +16,7 @@ CROSSOVER_CHANCE = 0.35
 class Population:
     def __init__(self, imgSz, population_amount):
         self.imgSz = imgSz
-        self.circles = [Shape(imgSz) for _ in range(population_amount)]
+        self.circles = [Shape(imgSz, self) for _ in range(population_amount)]
 
     def mutate_or_crossOver(self):
 
@@ -24,6 +25,13 @@ class Population:
 
         for s in random.sample(self.circles, int(len(self.circles) * CROSSOVER_CHANCE)):
                 s.crossover(random.sample(self.circles, 1))
+
+    def scoreCircles(self, im1, im2):
+        i1 = np.array(im1, np.int16)
+        i2 = np.array(im2, np.int16)
+        dif = np.abs(i1 - i2)
+        for c in self.circles:
+            c.score(dif)
 
     def drawImage(self):
 
