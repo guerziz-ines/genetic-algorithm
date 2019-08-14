@@ -26,7 +26,7 @@ class GA:
         self.generation = 1
         self.parent = Population(target.size, INITIAL_POPULATION)
         self.curr_img = self.parent.drawImage()
-        self.score = 100
+        self.score = self.parent.global_score(self.curr_img, self.target)
 
     def run_GA(self):
         if not os.path.exists("results"):
@@ -42,7 +42,7 @@ class GA:
             f.write("Generation: #{}, score: {}\n".format(self.generation, self.score))
 
             if self.generation % GENETAIONS_PER_IMAGE == 0:
-                self.parent.drawImage().save(os.path.join("results", "{}.png".format(generation)))
+                self.parent.drawImage().save(os.path.join("results", "{}.png".format(self.generation)))
 
             #score all shapes and sort them in by their fitness
             self.parent.scoreCircles(self.curr_img, self.target)

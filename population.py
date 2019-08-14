@@ -20,6 +20,7 @@ class Population:
         self.imgSz = imgSz
         self.circles = [Circle(imgSz, self) for _ in range(population_amount)]
 
+
     def scoreCircles(self, im1, im2):
         i1 = np.array(im1, np.int16)
         i2 = np.array(im2, np.int16)
@@ -52,7 +53,7 @@ class Population:
             self.circles.append(newGene)
         return gen
 
-    def global_score(im1, im2):
+    def global_score(self, im1, im2):
         i1 = np.array(im1, np.int16)
         i2 = np.array(im2, np.int16)
         dif = np.sum(np.abs(i1 - i2))
