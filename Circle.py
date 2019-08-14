@@ -1,4 +1,5 @@
 import random
+import warnings
 
 import numpy as np
 from PIL import Image
@@ -104,8 +105,10 @@ class Circle:
         y, x = np.ogrid[-r:r+1, -r:r+1]
         mask_circle = x**2 + y**2 <= r**2
         kernel[mask_circle] = 1
-        #need to chek this line
-        fitness = np.mean(np.mean(np.mean(gf(data, np.mean, footprint=kernel))))
+        # I expect to see RuntimeWarnings in this block
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            fitness = np.mean(np.mean(np.mean(gf(data, np.mean, footprint=kernel))))
 
         self.fitness = fitness
 
